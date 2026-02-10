@@ -1,0 +1,27 @@
+{
+  "name": "jason-claude-plugins",
+  "description": "Personal Claude Code plugin marketplace for Jason Y",
+  "owner": {
+    "name": "Jason Y"
+  },
+  "plugins": [
+    {
+      "name": "jason-handoff",
+      "description": "Session handoff skills and hooks for seamless context transfer between Claude Code sessions",
+      "version": "1.0.0",
+      "source": "https://github.com/JasonY199/jason-handoff",
+      "author": {
+        "name": "Jason Y"
+      }
+    },
+    {
+      "name": "jason-design-system",
+      "description": "Design-system-first skill — discover existing tokens and components before writing UI code",
+      "version": "1.0.0",
+      "source": "https://github.com/JasonY199/jason-design-system",
+      "author": {
+        "name": "Jason Y"
+      }
+    }
+  ]
+}
