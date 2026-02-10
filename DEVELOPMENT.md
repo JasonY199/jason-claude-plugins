@@ -153,6 +153,26 @@ Scripts using `require("./relative-path")` resolve from `__dirname`, which works
 
 ## Updating a Plugin
 
+### Marketplaces do NOT auto-update
+
+Claude Code does NOT refresh marketplace manifests on startup. After pushing changes to GitHub, you must manually update:
+
+```
+/plugin marketplace update jason-claude-plugins
+```
+
+Or: `/plugin` > Marketplaces tab > select marketplace > Update
+
+### Full update workflow
+
+1. Make changes to plugin code
+2. Bump `version` in the plugin's `.claude-plugin/plugin.json`
+3. Bump `version` in `.claude-plugin/marketplace.json` for the same plugin
+4. `git commit && git push`
+5. In Claude Code: `/plugin marketplace update jason-claude-plugins`
+6. Go to Installed tab > select plugin > "Update now"
+7. Restart Claude Code
+
 ### Version bumping is required
 
 Claude Code caches plugins by version. If you change plugin content without bumping the version, users won't get the update even after reinstalling.
