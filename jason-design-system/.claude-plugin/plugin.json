@@ -1,0 +1,13 @@
+{
+  "name": "jason-design-system",
+  "version": "1.0.0",
+  "description": "Design-system-first skill — discover existing tokens and components before writing UI code",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-design-system",
+  "license": "MIT",
+  "keywords": ["design-system", "ui", "tokens", "components"],
+  "skills": ["./skills/design-system-first"]
+}

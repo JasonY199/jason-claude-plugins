@@ -1,0 +1,14 @@
+{
+  "name": "jason-handoff",
+  "version": "1.0.0",
+  "description": "Session handoff skills and hooks for seamless context transfer between Claude Code sessions",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-handoff",
+  "license": "MIT",
+  "keywords": ["handoff", "session", "context", "resume"],
+  "skills": ["./skills/handoff-save", "./skills/handoff-resume"],
+  "hooks": "./hooks/hooks.json"
+}
