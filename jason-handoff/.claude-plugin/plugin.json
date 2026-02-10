@@ -9,6 +9,5 @@
   "repository": "https://github.com/JasonY199/jason-handoff",
   "license": "MIT",
   "keywords": ["handoff", "session", "context", "resume"],
-  "skills": ["./skills/handoff-save", "./skills/handoff-resume"],
-  "hooks": "./hooks/hooks.json"
+  "skills": ["./skills/handoff-save", "./skills/handoff-resume"]
 }
