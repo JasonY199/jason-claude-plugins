@@ -198,17 +198,15 @@ Claude Code maintains TWO separate caches:
 
 ### Forcing a cache refresh
 
-If updates aren't showing:
+If `/plugin marketplace update jason-claude-plugins` doesn't pick up changes:
 
-1. **Marketplace manifest stale** — the Discover tab shows old versions:
+1. **Marketplace manifest stale** — Discover tab shows old versions:
 
    ```bash
    cd ~/.claude/plugins/marketplaces/jason-claude-plugins && git pull
    ```
 
-   Or: `/plugin` > Marketplaces tab > select marketplace > Update
-
-2. **Plugin cache stale** — installed plugin has old code:
+2. **Plugin cache stale** — installed plugin has old code despite correct version:
 
    ```bash
    rm -rf ~/.claude/plugins/cache/jason-claude-plugins/{plugin-name}/
@@ -217,13 +215,15 @@ If updates aren't showing:
    Then reinstall the plugin.
 
 3. **Nuclear option** — clear everything for this marketplace:
+
    ```bash
    rm -rf ~/.claude/plugins/cache/jason-claude-plugins
    rm -rf ~/.claude/plugins/marketplaces/jason-claude-plugins
    ```
-   Then re-add the marketplace and reinstall plugins.
 
-Always restart Claude Code after cache changes.
+   Then re-add: `/plugin marketplace add JasonY199/jason-claude-plugins` and reinstall plugins.
+
+Always restart Claude Code after manual cache changes.
 
 ## Debugging
 
