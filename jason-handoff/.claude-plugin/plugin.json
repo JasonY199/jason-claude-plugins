@@ -1,6 +1,6 @@
 {
   "name": "jason-handoff",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Session handoff skills and hooks for seamless context transfer between Claude Code sessions",
   "author": {
     "name": "Jason Y",
