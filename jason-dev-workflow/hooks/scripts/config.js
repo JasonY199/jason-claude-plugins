@@ -4,11 +4,12 @@ const path = require("path");
 const CONFIG_FILENAME = ".dev-workflow.json";
 
 /**
- * Load project config from .dev-workflow.json in the current working directory.
+ * Load project config from .dev-workflow.json.
+ * Accepts optional cwd override (e.g. from hook stdin input).
  * Returns null if no config file exists (plugin is not active for this project).
  */
-function loadConfig() {
-  const configPath = path.join(process.cwd(), CONFIG_FILENAME);
+function loadConfig(cwd) {
+  const configPath = path.join(cwd || process.cwd(), CONFIG_FILENAME);
   if (!fs.existsSync(configPath)) {
     return null;
   }

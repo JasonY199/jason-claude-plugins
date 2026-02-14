@@ -30,13 +30,15 @@ async function searchMemories(apiKey, userId, appId, query, topK = 10) {
 /**
  * Add a memory, scoped to user_id and app_id.
  * Metadata can include { type: "session_log" } or { type: "decision" } for filtering.
+ * Set infer=false to bypass mem0's extraction/deduplication pipeline (for raw logs).
  */
-async function addMemory(apiKey, userId, appId, text, metadata = {}) {
+async function addMemory(apiKey, userId, appId, text, metadata = {}, { infer = true } = {}) {
   const body = {
     messages: [{ role: "user", content: text }],
     user_id: userId,
     app_id: appId,
     metadata,
+    infer,
   };
   const res = await request(
     "POST",
