@@ -1,0 +1,18 @@
+{
+  "name": "jason-dev-workflow",
+  "version": "1.0.0",
+  "description": "Automates Plane + mem0 development workflow with automatic context loading, decision capture, and sprint management",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-claude-plugins",
+  "license": "MIT",
+  "keywords": ["workflow", "plane", "mem0", "sprint", "context"],
+  "skills": [
+    "./skills/dev-help",
+    "./skills/store",
+    "./skills/spec-publish",
+    "./skills/sprint-plan"
+  ]
+}
