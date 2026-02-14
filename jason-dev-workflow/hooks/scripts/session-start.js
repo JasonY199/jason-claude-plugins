@@ -1,4 +1,3 @@
-const { execFileSync } = require("child_process");
 const { loadConfig, getEnvVar } = require("./config");
 const plane = require("./plane-client");
 const mem0 = require("./mem0-client");
