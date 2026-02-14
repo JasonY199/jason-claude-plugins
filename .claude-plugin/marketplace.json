@@ -26,7 +26,7 @@
     {
       "name": "jason-dev-workflow",
       "description": "Automates Plane + mem0 development workflow with automatic context loading, decision capture, and sprint management",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./jason-dev-workflow",
       "author": {
         "name": "Jason Y"
