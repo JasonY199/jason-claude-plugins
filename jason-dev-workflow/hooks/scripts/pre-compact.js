@@ -9,10 +9,18 @@ const { appId } = config.mem0;
 
 process.stdout.write(
   [
-    "## Before Compacting",
+    "## Context compression incoming",
     "",
-    "Review this conversation for any architectural or design decisions that haven't been stored to mem0 yet.",
-    `Store them now using the mem0 MCP tool (add_memory) with app_id: "${appId}" before context is compressed.`,
+    "Review this conversation for anything worth preserving long-term that hasn't been saved to mem0 yet:",
+    "",
+    "- Decisions made and their reasoning",
+    "- Patterns or conventions established",
+    "- Gotchas or workarounds discovered",
+    "- Anything that would be painful to re-learn",
+    "",
+    `Save each as a separate, clear statement using the mem0 MCP add_memory tool with app_id: "${appId}".`,
+    "",
+    "Do NOT save: git state, file lists, session continuity info (handoff plugin handles that), or things already in MEMORY.md.",
     "",
   ].join("\n"),
 );

@@ -1,6 +1,5 @@
 const { loadConfig, getEnvVar } = require("./config");
 const plane = require("./plane-client");
-const mem0 = require("./mem0-client");
 
 async function main() {
   const config = loadConfig();
@@ -9,14 +8,10 @@ async function main() {
   }
 
   const planeToken = getEnvVar("PLANE_API_TOKEN");
-  const mem0Key = getEnvVar("MEM0_API_KEY");
-  const mem0UserId = process.env.MEM0_DEFAULT_USER_ID || "jason";
-
   const { workspace, projectId } = config.plane;
   const { appId } = config.mem0;
 
   const sections = [];
-  sections.push("## Dev Workflow Context\n");
 
   // --- Plane: Sprint Status ---
   if (planeToken) {
@@ -39,7 +34,13 @@ async function main() {
           activeCycle.id,
         );
 
-        const grouped = { backlog: [], unstarted: [], started: [], completed: [], cancelled: [] };
+        const grouped = {
+          backlog: [],
+          unstarted: [],
+          started: [],
+          completed: [],
+          cancelled: [],
+        };
         for (const item of workItems) {
           const wi = item.issue_detail || item;
           const state = stateMap[wi.state] || {};
@@ -81,40 +82,33 @@ async function main() {
     } catch (err) {
       sections.push(`**Sprint:** Could not reach Plane (${err.message})`);
     }
-  } else {
-    sections.push("**Sprint:** PLANE_API_TOKEN not set — skipping");
   }
 
-  // --- mem0: Recent Context ---
-  if (mem0Key) {
-    try {
-      const [decisions, sessionLogs] = await Promise.all([
-        mem0.searchMemories(mem0Key, mem0UserId, appId, "architectural decision design choice", 5),
-        mem0.searchMemories(mem0Key, mem0UserId, appId, "session ended branch commits", 3),
-      ]);
+  // --- Behavioral instruction for the AI ---
+  sections.push(`
+---
+**mem0 — long-term memory for this project**
 
-      if (sessionLogs.length > 0) {
-        const latest = sessionLogs[0];
-        sections.push(`\n**Last session:** ${latest.memory}`);
-      }
+This project uses mem0 (app_id: "${appId}") for long-term knowledge storage. mem0 is NOT queried automatically — use it on demand via the mem0 MCP tools.
 
-      if (decisions.length > 0) {
-        sections.push(
-          "\n**Recent decisions:**\n" +
-            decisions.map((d) => `- ${d.memory}`).join("\n"),
-        );
-      }
-    } catch (err) {
-      sections.push(`\n**Context:** Could not reach mem0 (${err.message})`);
-    }
-  } else {
-    sections.push("\n**Context:** MEM0_API_KEY not set — skipping");
-  }
+**When to SAVE to mem0** (use add_memory with app_id: "${appId}"):
+- Architectural or design decisions and their reasoning
+- Patterns, conventions, or rules established during development
+- Non-obvious gotchas, workarounds, or things that broke unexpectedly
+- User preferences or workflow choices
+- Anything someone would need to know weeks from now
 
-  // --- Session Rules ---
-  sections.push(
-    `\n**Session rules:** When architectural or design decisions are made during this session, proactively store them to mem0 using the mem0 MCP tools (add_memory) with app_id: "${appId}". Don't ask — just store them.`,
-  );
+**When to SEARCH mem0** (use search_memories with app_id: "${appId}"):
+- When the user asks "what did we decide about X?"
+- When starting work on a feature and you want to check for prior decisions
+- When you're unsure about a convention or pattern that may have been established before
+
+**When NOT to use mem0:**
+- Session-to-session continuity (that's what the handoff plugin is for)
+- Git state, commit hashes, file lists (that's visible from git)
+- Things already in MEMORY.md or CLAUDE.md (already loaded every session)
+
+**If saving to mem0 from outside this project**, classify into a sensible app_id based on context — e.g. "mdl" for Mountain Dream Living, "freelance" for client work, "dev-patterns" for general development knowledge. Use judgment; don't dump everything into a generic bucket.`);
 
   process.stdout.write(sections.join("\n") + "\n");
 }
