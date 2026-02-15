@@ -1,7 +1,7 @@
 {
   "name": "jason-dev-workflow",
-  "version": "1.1.0",
-  "description": "Development workflow plugin — Plane sprint context, mem0 long-term memory, and tools for sprint planning and spec publishing",
+  "version": "1.2.0",
+  "description": "Development workflow plugin — Plane sprint context, mem0 long-term memory, context-researcher agent, and tools for sprint planning and spec publishing",
   "author": {
     "name": "Jason Y",
     "url": "https://github.com/JasonY199"
@@ -14,5 +14,8 @@
     "./skills/store",
     "./skills/spec-publish",
     "./skills/sprint-plan"
+  ],
+  "agents": [
+    "./agents/context-researcher.md"
   ]
 }
