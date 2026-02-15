@@ -1,7 +1,7 @@
 ---
 name: context-researcher
-description: Fetches architecture context from local docs, mem0 memories, and Plane work items. Use PROACTIVELY when starting work on a feature, referencing architecture decisions, or needing project context without polluting the main conversation. MUST BE USED instead of directly reading architecture docs.
-tools: Read, Grep, Glob, mcp__mem0__search_memories, mcp__mem0__get_memories, mcp__plane__list_work_items, mcp__plane__retrieve_work_item, mcp__plane__list_modules, mcp__plane__list_states
+description: Fetches architecture context from local docs and mem0 memories. Use PROACTIVELY when starting work on a feature, referencing architecture decisions, or needing project context without polluting the main conversation. MUST BE USED instead of directly reading architecture docs.
+tools: Read, Grep, Glob, mcp__mem0__search_memories, mcp__mem0__get_memories
 model: sonnet
 ---
 
@@ -33,17 +33,7 @@ mcp__mem0__search_memories with query: "<topic>" and app_id filter
 
 mem0 stores the "why" behind decisions — reasoning, trade-offs, failed approaches to avoid.
 
-### 3. Work Items
-
-Check `.dev-workflow.json` for `plane.workspace` and `plane.projectId`. If they exist, check relevant work items:
-
-```
-mcp__plane__list_work_items for the project
-```
-
-Filter to the relevant module/phase to understand what's planned.
-
-### 4. Project Config
+### 3. Project Config
 
 Read `CLAUDE.md` if it exists — it typically has the project summary, tech stack, and key patterns.
 
@@ -67,9 +57,6 @@ Return a structured summary with ONLY what's relevant:
 
 ### Things to Avoid
 - [Known gotcha or failed approach]
-
-### Related Work Items
-- [Item title] — [brief description if relevant]
 ```
 
 Omit any section that has no relevant content. Keep it tight.

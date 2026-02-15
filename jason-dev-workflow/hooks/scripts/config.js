@@ -16,9 +16,9 @@ function loadConfig(cwd) {
   try {
     const raw = fs.readFileSync(configPath, "utf8");
     const config = JSON.parse(raw);
-    if (!config.plane || !config.mem0) {
+    if (!config.mem0) {
       process.stderr.write(
-        `[dev-workflow] ${CONFIG_FILENAME} missing required "plane" or "mem0" section\n`,
+        `[dev-workflow] ${CONFIG_FILENAME} missing required "mem0" section\n`,
       );
       return null;
     }

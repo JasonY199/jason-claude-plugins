@@ -1,19 +1,17 @@
 {
   "name": "jason-dev-workflow",
-  "version": "1.3.1",
-  "description": "Development workflow plugin — Plane sprint context, mem0 long-term memory, context-researcher agent (reads local docs/), and tools for sprint planning and spec publishing",
+  "version": "2.0.0",
+  "description": "Development workflow plugin — mem0 long-term memory, context-researcher agent (reads local docs + mem0), and knowledge storage tools",
   "author": {
     "name": "Jason Y",
     "url": "https://github.com/JasonY199"
   },
   "repository": "https://github.com/JasonY199/jason-claude-plugins",
   "license": "MIT",
-  "keywords": ["workflow", "plane", "mem0", "sprint", "context"],
+  "keywords": ["workflow", "mem0", "context", "memory"],
   "skills": [
     "./skills/dev-help",
-    "./skills/store",
-    "./skills/spec-publish",
-    "./skills/sprint-plan"
+    "./skills/store"
   ],
   "agents": [
     "./agents/context-researcher.md"
