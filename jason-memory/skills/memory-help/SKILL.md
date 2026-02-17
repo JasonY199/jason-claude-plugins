@@ -11,26 +11,28 @@ Show the user a reference card for the jason-memory plugin. Run `node "<cli-path
 
 Present this information:
 
-### What's Automatic (hooks — no action needed)
+### What's Automatic (no action needed)
 
-| Hook | When | What It Does |
-|------|------|-------------|
-| Session Start | Every session open | Loads CLI path, recent memories, and behavioral instructions |
-| Before Compaction | Context compression | Reminds to capture undocumented decisions before context is lost |
+| Feature | How It Works |
+|---------|-------------|
+| **Auto-store** | Memories are captured silently as decisions, patterns, errors, and learnings emerge during work |
+| **Auto-recall** | Memories are searched silently when switching topics or starting work on a new area |
+| **Dedup** | Before storing, `find-similar` checks for existing memories — updates instead of duplicating |
+| **Pre-compaction** | Before context compression, undocumented knowledge is captured to memory |
 
-### Available Skills
+### Explicit Skills (override or force)
 
 | Skill | What It Does |
 |-------|-------------|
-| `/remember` | Store a decision, pattern, learning, error, or observation to local memory |
-| `/recall` | Search memories via the memory-researcher agent (context-safe) |
+| `/remember` | Force-store a specific memory (bypasses auto-store timing) |
+| `/recall` | Force-search memories (bypasses auto-recall timing) |
 | `/memory-help` | This reference card |
 
 ### Agent
 
 | Agent | What It Does |
 |-------|-------------|
-| `memory-researcher` | Searches memories + local docs in its own context window. Returns focused summaries. Used automatically by /recall. |
+| `memory-researcher` | Searches memories + local docs in its own context window. Returns focused summaries. Used by both auto-recall and /recall. |
 
 ### Memory Types
 
@@ -53,6 +55,16 @@ Tags are lowercase, hyphen-separated, 1-3 per memory. Examples: `auth`, `api`, `
 - Add `.memory/` to `.gitignore` if you prefer personal-only memories
 - BM25-ranked search — results sorted by relevance, not just keyword match
 
+### Dedup Workflow
+
+Before storing any memory, the system runs:
+```
+node "<cli-path>" find-similar --content "proposed text" --threshold 0.5
+```
+- **Match found, new info supersedes**: updates the existing memory via `update --id <id> --content "..."`
+- **Match found, same info**: skips storing
+- **No match**: stores as new
+
 ### Current Stats
 
 Run the stats command and display the output — total memories, breakdown by type, top tags.
@@ -62,6 +74,8 @@ Run the stats command and display the output — total memories, breakdown by ty
 ```
 node "<cli-path>" store --content "..." --type decision --tags "tag1,tag2"
 node "<cli-path>" search --query "auth flow" --limit 10
+node "<cli-path>" find-similar --content "proposed text" --threshold 0.5 --limit 3
+node "<cli-path>" update --id <memory-id> --content "updated text" [--type type] [--tags "t1,t2"]
 node "<cli-path>" list --type decision --tag auth --limit 20
 node "<cli-path>" recent --limit 5
 node "<cli-path>" get --id <memory-id>

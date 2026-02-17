@@ -1,6 +1,6 @@
 # jason-memory — Setup
 
-Self-contained local memory for Claude Code. Zero external dependencies.
+Self-contained local memory for Claude Code. Zero external dependencies. Install and forget — memories are captured and recalled automatically.
 
 ## Prerequisites
 
@@ -16,32 +16,31 @@ Restart Claude Code after installing.
 
 ## How It Works
 
+- **Automatic**: Memories are stored and recalled silently during normal work — no commands needed
 - Memories are stored in `.memory/memories.json` at your project root
 - The file is created automatically on first use — no setup needed
 - Works in any git repo (or any directory)
 - Search uses BM25 ranking — results sorted by relevance, not just keyword match
+- Built-in dedup: before storing, the system checks for similar existing memories and updates instead of duplicating
 
-## Usage
+## What Gets Captured
 
-### Store a memory
+The plugin automatically stores:
+- Architectural or design decisions and their reasoning
+- Patterns, conventions, or rules established during development
+- Non-obvious gotchas, workarounds, or things that broke unexpectedly
+- Error resolutions that took significant debugging
+- User preferences or workflow choices
 
-Use `/remember` or tell Claude to remember something:
+It does NOT store trivial details, git state, or things already in CLAUDE.md.
 
-> "Remember that we decided to use Tailwind instead of styled-components"
+## Explicit Commands
 
-Claude will classify the memory (decision, learning, error, pattern, observation), add tags, and store it.
+Auto-memory handles most cases, but you can override:
 
-### Search memories
-
-Use `/recall` or ask about past decisions:
-
-> "What did we decide about the authentication flow?"
-
-Searches run via the memory-researcher agent in its own context window — no context pollution.
-
-### Reference card
-
-Use `/memory-help` for a full reference of commands, types, and conventions.
+- `/remember` — force-store a specific memory
+- `/recall` — force-search memories for a topic
+- `/memory-help` — full reference card
 
 ## Git Integration
 
@@ -83,4 +82,8 @@ To keep memories private, add to `.gitignore`:
 - Try broader search terms — BM25 works on word overlap
 
 **`.memory/` directory not created?**
-- It's created on first `/remember` — store a memory first
+- It's created on first memory store — work on something and the auto-store will create it
+
+**Too many memories being stored?**
+- The quality guard limits to ~5 high-quality memories per session
+- If the store is noisy, the dedup workflow will consolidate over time

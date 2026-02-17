@@ -37,7 +37,7 @@ function main() {
   const sections = [];
 
   sections.push(`---`);
-  sections.push(`**jason-memory — local project memory**`);
+  sections.push(`**jason-memory — local project memory (auto-active)**`);
   sections.push(``);
   sections.push(`Memory CLI: node "${cliPath}"`);
   sections.push(`Project: ${project}`);
@@ -49,7 +49,7 @@ function main() {
       .join(", ");
     sections.push(`Memories: ${stats.total} (${typeParts})`);
   } else {
-    sections.push(`Memories: 0 — use /remember to start storing decisions and patterns.`);
+    sections.push(`Memories: 0`);
   }
 
   // Recent memories
@@ -62,26 +62,44 @@ function main() {
     }
   }
 
-  // Behavioral instructions
+  // Autonomous behavioral instructions
   sections.push(``);
-  sections.push(`**When to STORE** (use /remember or call the CLI directly):`);
+  sections.push(`**AUTO-STORE — capture silently as you work:**`);
+  sections.push(`You MUST store memories autonomously when you encounter:`);
   sections.push(`- Architectural or design decisions and their reasoning`);
   sections.push(`- Patterns, conventions, or rules established during development`);
   sections.push(`- Non-obvious gotchas, workarounds, or things that broke unexpectedly`);
   sections.push(`- Error resolutions that took significant debugging`);
   sections.push(`- User preferences or workflow choices`);
+  sections.push(`Do not announce that you are storing a memory — just do it silently via Bash.`);
   sections.push(``);
-  sections.push(`**When to SEARCH** (use /recall — runs via memory-researcher agent):`);
-  sections.push(`- When the user asks "what did we decide about X?"`);
-  sections.push(`- When starting work on a feature — check for prior decisions`);
-  sections.push(`- When unsure about a convention or pattern that may have been established`);
+  sections.push(`**AUTO-RECALL — search silently when context would help:**`);
+  sections.push(`You MUST search memories (via the memory-researcher agent) when:`);
+  sections.push(`- Starting work on a feature or area you haven't touched this session`);
+  sections.push(`- The user asks about past decisions or conventions`);
+  sections.push(`- You're unsure about a pattern that may have been established`);
+  sections.push(`Do not announce that you are searching memory — just do it silently.`);
   sections.push(``);
-  sections.push(`**When NOT to use memory:**`);
-  sections.push(`- Session-to-session continuity (handoff plugin handles that)`);
+  sections.push(`**DEDUP WORKFLOW — always check before storing:**`);
+  sections.push(`Before storing any new memory, run find-similar to check for duplicates:`);
+  sections.push(`\`node "${cliPath}" find-similar --content "proposed text" --threshold 0.5\``);
+  sections.push(`- If a similar memory exists and the new info supersedes it: use \`update --id <id> --content "evolved statement"\``);
+  sections.push(`- If a similar memory exists and says the same thing: skip storing`);
+  sections.push(`- If no similar memory exists: store as new`);
+  sections.push(``);
+  sections.push(`**QUALITY GUARD:**`);
+  sections.push(`- 5 high-quality memories per session > 20 noise entries`);
+  sections.push(`- One clear statement per memory, present tense`);
+  sections.push(`- Classify type: decision / learning / error / pattern / observation`);
+  sections.push(`- 1-3 lowercase tags per memory`);
+  sections.push(``);
+  sections.push(`**DO NOT store:**`);
+  sections.push(`- Session continuity info (handoff plugin handles that)`);
   sections.push(`- Git state, commit hashes, file lists (visible from git)`);
-  sections.push(`- Things already in CLAUDE.md or MEMORY.md (loaded every session)`);
+  sections.push(`- Things already in CLAUDE.md or MEMORY.md`);
+  sections.push(`- Trivial or obvious details that don't need long-term recall`);
   sections.push(``);
-  sections.push(`**Rules:** One clear statement per memory. Present tense. Classify type (decision/learning/error/pattern/observation). Always use the memory-researcher agent for searching (protects context window).`);
+  sections.push(`**Explicit overrides:** /remember forces a store, /recall forces a search. These still work as before.`);
 
   process.stdout.write(sections.join("\n") + "\n");
 }

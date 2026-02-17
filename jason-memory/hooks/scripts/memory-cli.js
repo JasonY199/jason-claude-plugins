@@ -328,6 +328,65 @@ function cmdRelate(args) {
   };
 }
 
+function cmdUpdate(args) {
+  if (!args.id) {
+    return { error: "Missing --id" };
+  }
+  if (!args.content) {
+    return { error: "Missing --content" };
+  }
+
+  const data = loadMemories();
+  const memory = data.memories.find((m) => m.id === args.id);
+
+  if (!memory) {
+    return { error: `Memory not found: ${args.id}` };
+  }
+
+  const validTypes = ["decision", "learning", "error", "pattern", "observation"];
+  if (args.type && !validTypes.includes(args.type)) {
+    return { error: `Invalid type "${args.type}". Valid: ${validTypes.join(", ")}` };
+  }
+
+  const previous = memory.content;
+  memory.content = args.content;
+  if (args.type) memory.type = args.type;
+  if (args.tags) {
+    memory.tags = args.tags.split(",").map((t) => t.trim().toLowerCase());
+  }
+  memory.updated = new Date().toISOString();
+
+  saveMemories(data);
+  return { updated: { id: memory.id, previous, current: memory.content, type: memory.type } };
+}
+
+function cmdFindSimilar(args) {
+  if (!args.content) {
+    return { error: "Missing --content" };
+  }
+
+  const threshold = parseFloat(args.threshold) || 0.5;
+  const limit = parseInt(args.limit) || 3;
+
+  const data = loadMemories();
+  const results = bm25Search(data.memories, args.content, limit);
+
+  const filtered = results.filter((r) => r.score >= threshold);
+
+  return {
+    query: args.content,
+    threshold,
+    count: filtered.length,
+    matches: filtered.map((r) => ({
+      id: r.memory.id,
+      content: r.memory.content,
+      type: r.memory.type,
+      tags: r.memory.tags,
+      score: Math.round(r.score * 1000) / 1000,
+    })),
+  };
+}
+
 function cmdStats() {
   const data = loadMemories();
   const memories = data.memories;
@@ -393,6 +452,8 @@ function main() {
     get: cmdGet,
     delete: cmdDelete,
     relate: cmdRelate,
+    update: cmdUpdate,
+    "find-similar": cmdFindSimilar,
     stats: cmdStats,
   };
 
