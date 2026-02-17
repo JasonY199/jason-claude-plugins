@@ -25,8 +25,8 @@
     },
     {
       "name": "jason-dev-workflow",
-      "description": "Automates Plane + mem0 development workflow with context-researcher agent, automatic context loading, decision capture, and sprint management",
-      "version": "1.2.0",
+      "description": "Development workflow plugin — mem0 long-term memory, context-researcher agent (reads local docs + mem0), and knowledge storage tools",
+      "version": "2.0.0",
       "source": "./jason-dev-workflow",
       "author": {
         "name": "Jason Y"
@@ -34,8 +34,8 @@
     },
     {
       "name": "jason-memory",
-      "description": "Self-contained local memory — BM25 search, auto-scoped per project, zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
-      "version": "1.0.0",
+      "description": "Automatic local memory — captures and recalls silently during work. BM25 search, dedup, auto-scoped per project, zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
+      "version": "2.0.0",
       "source": "./jason-memory",
       "author": {
         "name": "Jason Y"
