@@ -1,5 +1,3 @@
 {
-  "enabledPlugins": {
-    "jason-memory@jason-claude-plugins": true
-  }
+  "enabledPlugins": {}
 }
