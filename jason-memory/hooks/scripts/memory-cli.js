@@ -71,7 +71,159 @@ function generateId() {
   return `m_${ts}_${hex}`;
 }
 
+// --- Porter Stemmer ---
+
+const _stemCache = {};
+
+function porterStem(word) {
+  if (word.length < 3) return word;
+
+  const isConsonant = (w, i) => {
+    const c = w[i];
+    if ("aeiou".includes(c)) return false;
+    if (c === "y") return i === 0 || !isConsonant(w, i - 1);
+    return true;
+  };
+
+  const measure = (w) => {
+    let m = 0;
+    let prev = null;
+    for (let i = 0; i < w.length; i++) {
+      const cons = isConsonant(w, i);
+      if (!cons && prev === true) m++;
+      prev = cons;
+    }
+    return m;
+  };
+
+  const hasVowel = (w) => {
+    for (let i = 0; i < w.length; i++) {
+      if (!isConsonant(w, i)) return true;
+    }
+    return false;
+  };
+
+  const endsDouble = (w) =>
+    w.length >= 2 && w[w.length - 1] === w[w.length - 2] && isConsonant(w, w.length - 1);
+
+  const endsCVC = (w) => {
+    const l = w.length;
+    if (l < 3) return false;
+    return (
+      isConsonant(w, l - 1) &&
+      !isConsonant(w, l - 2) &&
+      isConsonant(w, l - 3) &&
+      !"wxy".includes(w[l - 1])
+    );
+  };
+
+  let w = word;
+
+  // Step 1a
+  if (w.endsWith("sses")) w = w.slice(0, -2);
+  else if (w.endsWith("ies")) w = w.slice(0, -2);
+  else if (!w.endsWith("ss") && w.endsWith("s")) w = w.slice(0, -1);
+
+  // Step 1b
+  let step1bModified = false;
+  if (w.endsWith("eed")) {
+    if (measure(w.slice(0, -3)) > 0) w = w.slice(0, -1);
+  } else if (w.endsWith("ed") && hasVowel(w.slice(0, -2))) {
+    w = w.slice(0, -2);
+    step1bModified = true;
+  } else if (w.endsWith("ing") && hasVowel(w.slice(0, -3))) {
+    w = w.slice(0, -3);
+    step1bModified = true;
+  }
+  if (step1bModified) {
+    if (w.endsWith("at") || w.endsWith("bl") || w.endsWith("iz")) {
+      w += "e";
+    } else if (endsDouble(w) && !"lsz".includes(w[w.length - 1])) {
+      w = w.slice(0, -1);
+    } else if (measure(w) === 1 && endsCVC(w)) {
+      w += "e";
+    }
+  }
+
+  // Step 1c
+  if (w.endsWith("y") && hasVowel(w.slice(0, -1))) {
+    w = w.slice(0, -1) + "i";
+  }
+
+  // Step 2
+  const step2 = [
+    ["ational", "ate"], ["tional", "tion"], ["enci", "ence"], ["anci", "ance"],
+    ["izer", "ize"], ["abli", "able"], ["alli", "al"], ["entli", "ent"],
+    ["eli", "e"], ["ousli", "ous"], ["ization", "ize"], ["ation", "ate"],
+    ["ator", "ate"], ["alism", "al"], ["iveness", "ive"], ["fulness", "ful"],
+    ["ousness", "ous"], ["aliti", "al"], ["iviti", "ive"], ["biliti", "ble"],
+  ];
+  for (const [suffix, replacement] of step2) {
+    if (w.endsWith(suffix)) {
+      const stem = w.slice(0, -suffix.length);
+      if (measure(stem) > 0) w = stem + replacement;
+      break;
+    }
+  }
+
+  // Step 3
+  const step3 = [
+    ["icate", "ic"], ["ative", ""], ["alize", "al"], ["iciti", "ic"],
+    ["ical", "ic"], ["ful", ""], ["ness", ""],
+  ];
+  for (const [suffix, replacement] of step3) {
+    if (w.endsWith(suffix)) {
+      const stem = w.slice(0, -suffix.length);
+      if (measure(stem) > 0) w = stem + replacement;
+      break;
+    }
+  }
+
+  // Step 4
+  const step4 = [
+    "al", "ance", "ence", "er", "ic", "able", "ible", "ant", "ement",
+    "ment", "ent", "ion", "ou", "ism", "ate", "iti", "ous", "ive", "ize",
+  ];
+  for (const suffix of step4) {
+    if (w.endsWith(suffix)) {
+      const stem = w.slice(0, -suffix.length);
+      if (suffix === "ion") {
+        if (measure(stem) > 1 && (stem.endsWith("s") || stem.endsWith("t"))) {
+          w = stem;
+        }
+      } else if (measure(stem) > 1) {
+        w = stem;
+      }
+      break;
+    }
+  }
+
+  // Step 5a
+  if (w.endsWith("e")) {
+    const stem = w.slice(0, -1);
+    if (measure(stem) > 1 || (measure(stem) === 1 && !endsCVC(stem))) {
+      w = stem;
+    }
+  }
+
+  // Step 5b
+  if (endsDouble(w) && w.endsWith("l") && measure(w) > 1) {
+    w = w.slice(0, -1);
+  }
+
+  return w;
+}
+
+function stem(word) {
+  if (_stemCache[word] !== undefined) return _stemCache[word];
+  const result = porterStem(word);
+  _stemCache[word] = result;
+  return result;
+}
+
 // --- Synonym expansion ---
+// True abbreviation/synonym pairs only. Conceptual associations
+// (e.g., "orm" ↔ "database") are handled by co-occurrence expansion.
 
 const SYNONYMS = {
   db: "database",
@@ -102,14 +254,33 @@ const SYNONYMS = {
   request: "req",
   res: "response",
   response: "res",
-  ui: "interface",
-  api: "endpoint",
   css: "styling",
   styling: "css",
   ts: "typescript",
   typescript: "ts",
   js: "javascript",
   javascript: "js",
+  lib: "library",
+  library: "lib",
+  dev: "development",
+  development: "dev",
+  prod: "production",
+  production: "prod",
+  doc: "documentation",
+  documentation: "doc",
+  docs: "documentation",
+  app: "application",
+  application: "app",
+  impl: "implementation",
+  implementation: "impl",
+  param: "parameter",
+  parameter: "param",
+  params: "parameters",
+  parameters: "params",
+  nav: "navigation",
+  navigation: "nav",
+  ui: "frontend",
+  frontend: "ui",
 };
 
 // --- Tokenization ---
@@ -121,8 +292,12 @@ function tokenize(text) {
     .filter((t) => t.length > 1);
 }
 
-function tokenizeWithBigrams(text) {
-  const unigrams = tokenize(text);
+function stemTokenize(text) {
+  return tokenize(text).map(stem);
+}
+
+function stemTokenizeWithBigrams(text) {
+  const unigrams = stemTokenize(text);
   const bigrams = [];
   for (let i = 0; i < unigrams.length - 1; i++) {
     bigrams.push(unigrams[i] + "_" + unigrams[i + 1]);
@@ -130,12 +305,54 @@ function tokenizeWithBigrams(text) {
   return { unigrams, bigrams };
 }
 
-function expandQuery(tokens) {
-  const expanded = new Set(tokens);
-  for (const t of tokens) {
+function expandWithSynonyms(rawTokens) {
+  const expanded = new Set(rawTokens);
+  for (const t of rawTokens) {
     if (SYNONYMS[t]) expanded.add(SYNONYMS[t]);
   }
   return [...expanded];
+}
+
+// --- Co-occurrence expansion ---
+// Learns which words appear together across the corpus.
+// If "drizzle" and "orm" co-occur in memories, searching "orm"
+// will boost documents containing "drizzle" — without explicit synonyms.
+
+function buildCooccurrence(memories) {
+  const cooc = {};
+  for (const m of memories) {
+    const tokens = [...new Set(stemTokenize(m.content))];
+    for (let i = 0; i < tokens.length; i++) {
+      for (let j = i + 1; j < tokens.length; j++) {
+        const a = tokens[i];
+        const b = tokens[j];
+        if (!cooc[a]) cooc[a] = {};
+        if (!cooc[b]) cooc[b] = {};
+        cooc[a][b] = (cooc[a][b] || 0) + 1;
+        cooc[b][a] = (cooc[b][a] || 0) + 1;
+      }
+    }
+  }
+  return cooc;
+}
+
+function getCooccurrenceExpansions(stemmedTokens, cooc, topN = 3) {
+  const existing = new Set(stemmedTokens);
+  const expansions = [];
+  for (const t of stemmedTokens) {
+    if (!cooc[t]) continue;
+    const related = Object.entries(cooc[t])
+      .filter(([word]) => !existing.has(word))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, topN);
+    for (const [word] of related) {
+      if (!existing.has(word)) {
+        expansions.push(word);
+        existing.add(word);
+      }
+    }
+  }
+  return expansions;
 }
 
 // --- BM25 Search ---
@@ -145,53 +362,68 @@ function bm25Search(memories, query, limit = 10) {
   const b = 0.75;
   const tagBoost = 2.0;
   const bigramBoost = 1.5;
+  const coocWeight = 0.3;
 
-  const { unigrams: queryUnigrams, bigrams: queryBigrams } = tokenizeWithBigrams(query);
-  const expandedUnigrams = expandQuery(queryUnigrams);
-  if (expandedUnigrams.length === 0 && queryBigrams.length === 0) return [];
+  // Query processing: raw tokens → synonym expansion → stem → co-occurrence expansion
+  const rawTokens = tokenize(query);
+  const synonymExpanded = expandWithSynonyms(rawTokens);
+  const stemmedQueryTokens = [...new Set(synonymExpanded.map(stem))];
 
+  // Bigrams from original query order (stemmed)
+  const orderedStems = rawTokens.map(stem);
+  const queryBigrams = [];
+  for (let i = 0; i < orderedStems.length - 1; i++) {
+    queryBigrams.push(orderedStems[i] + "_" + orderedStems[i + 1]);
+  }
+
+  if (stemmedQueryTokens.length === 0 && queryBigrams.length === 0) return [];
+
+  // Co-occurrence expansion from corpus
+  const cooc = buildCooccurrence(memories);
+  const coocTerms = getCooccurrenceExpansions(stemmedQueryTokens, cooc, 3);
+
+  // Build stemmed document representations
   const docs = memories.map((m) => {
-    const { unigrams: contentUnigrams, bigrams: contentBigrams } = tokenizeWithBigrams(m.content);
-    const tagTokens = (m.tags || []).flatMap((t) => tokenize(t));
-    const typeTokens = tokenize(m.type || "");
+    const { unigrams, bigrams } = stemTokenizeWithBigrams(m.content);
+    const tagTokens = (m.tags || []).flatMap((t) => tokenize(t).map(stem));
+    const typeTokens = tokenize(m.type || "").map(stem);
     return {
       memory: m,
-      tokens: contentUnigrams,
-      bigrams: contentBigrams,
+      tokens: unigrams,
+      bigrams,
       tagTokens,
-      allTokens: [...contentUnigrams, ...tagTokens, ...typeTokens],
-      length: contentUnigrams.length,
+      allTokens: [...unigrams, ...tagTokens, ...typeTokens],
+      length: unigrams.length,
     };
   });
 
   const N = docs.length;
   if (N === 0) return [];
-
   const avgdl = docs.reduce((sum, d) => sum + d.length, 0) / N;
 
-  // Document frequency for unigrams
+  // Document frequency for primary query terms
   const df = {};
-  for (const term of expandedUnigrams) {
-    df[term] = 0;
-    for (const doc of docs) {
-      if (doc.allTokens.includes(term)) df[term]++;
-    }
+  for (const term of stemmedQueryTokens) {
+    df[term] = docs.filter((d) => d.allTokens.includes(term)).length;
+  }
+
+  // Document frequency for co-occurrence terms
+  const coocDf = {};
+  for (const term of coocTerms) {
+    coocDf[term] = docs.filter((d) => d.allTokens.includes(term)).length;
   }
 
   // Document frequency for bigrams
   const bigramDf = {};
   for (const bg of queryBigrams) {
-    bigramDf[bg] = 0;
-    for (const doc of docs) {
-      if (doc.bigrams.includes(bg)) bigramDf[bg]++;
-    }
+    bigramDf[bg] = docs.filter((d) => d.bigrams.includes(bg)).length;
   }
 
   const scored = docs.map((doc) => {
     let score = 0;
 
-    // Unigram scoring
-    for (const term of expandedUnigrams) {
+    // Primary unigram scoring (query + synonym terms — full weight)
+    for (const term of stemmedQueryTokens) {
       const termDf = df[term] || 0;
       const idf = Math.log((N - termDf + 0.5) / (termDf + 0.5) + 1);
       const freq = doc.tokens.filter((t) => t === term).length;
@@ -201,7 +433,16 @@ function bm25Search(memories, query, limit = 10) {
       score += idf * (tf + tagTf);
     }
 
-    // Bigram scoring
+    // Co-occurrence scoring (reduced weight — these are associations, not equivalences)
+    for (const term of coocTerms) {
+      const termDf = coocDf[term] || 0;
+      const idf = Math.log((N - termDf + 0.5) / (termDf + 0.5) + 1);
+      const freq = doc.tokens.filter((t) => t === term).length;
+      const tf = (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * (doc.length / avgdl)));
+      score += coocWeight * idf * tf;
+    }
+
+    // Bigram scoring (stemmed)
     for (const bg of queryBigrams) {
       const bgDf = bigramDf[bg] || 0;
       const idf = Math.log((N - bgDf + 0.5) / (bgDf + 0.5) + 1);
@@ -218,11 +459,11 @@ function bm25Search(memories, query, limit = 10) {
     .slice(0, limit);
 }
 
-// --- Jaccard similarity for dedup ---
+// --- Jaccard similarity for dedup (stemmed) ---
 
 function jaccardSimilarity(textA, textB) {
-  const tokensA = new Set(tokenize(textA));
-  const tokensB = new Set(tokenize(textB));
+  const tokensA = new Set(stemTokenize(textA));
+  const tokensB = new Set(stemTokenize(textB));
   if (tokensA.size === 0 && tokensB.size === 0) return 1;
   if (tokensA.size === 0 || tokensB.size === 0) return 0;
   let intersection = 0;
@@ -615,7 +856,6 @@ function cmdDigest(args) {
   for (const t of typeOrder) {
     if (remaining <= 0) break;
     const mems = grouped[t];
-    // Sort by created desc, take up to remaining
     const sorted = mems.sort((a, b) => new Date(b.created) - new Date(a.created));
     const take = Math.min(sorted.length, remaining);
     for (let i = 0; i < take; i++) {
