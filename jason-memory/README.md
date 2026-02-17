@@ -19,7 +19,7 @@ Restart Claude Code after installing.
 - Memories are stored in `.memory/memories.json` at your project root
 - The file is created automatically on first use — no setup needed
 - Works in any git repo (or any directory)
-- Search uses BM25 ranking with bigram phrase matching and synonym expansion
+- Search uses BM25 ranking with Porter stemming, bigram phrase matching, synonym expansion, and corpus-adaptive co-occurrence
 - Built-in auto-dedup: `store` checks for similar memories and supersedes or skips automatically
 - Memory versioning: active, superseded, and archived statuses track knowledge evolution
 
@@ -97,7 +97,7 @@ To keep memories private, add to `.gitignore`:
 
 **Search returning no results?**
 - Check that memories exist: run `/memory-help` to see stats
-- Try broader search terms — BM25 works on word overlap with synonym expansion
+- Try broader search terms — BM25 works on stemmed word overlap with synonym and co-occurrence expansion
 
 **`.memory/` directory not created?**
 - It's created on first memory store — use `/remember` to create your first memory

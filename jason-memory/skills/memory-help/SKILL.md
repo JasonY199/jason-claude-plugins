@@ -61,7 +61,7 @@ Tags are lowercase, hyphen-separated, 1-3 per memory. Examples: `auth`, `api`, `
 - Memories stored in `.memory/memories.json` at the project root
 - Committed to git by default — memories travel with the code
 - Add `.memory/` to `.gitignore` if you prefer personal-only memories
-- BM25-ranked search with bigrams and synonym expansion
+- BM25-ranked search with Porter stemming, bigrams, synonym expansion, and corpus-adaptive co-occurrence
 - Auto-dedup on store — no need for manual find-similar
 
 ### CLI Commands
