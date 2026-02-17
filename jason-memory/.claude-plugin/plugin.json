@@ -1,7 +1,7 @@
 {
   "name": "jason-memory",
-  "version": "2.0.0",
-  "description": "Automatic local memory — captures and recalls silently during work. BM25 search, dedup, auto-scoped per project, zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
+  "version": "3.0.0",
+  "description": "Local project memory with auto-dedup, versioning, and BM25 search. Zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
   "author": {
     "name": "Jason Y",
     "url": "https://github.com/JasonY199"

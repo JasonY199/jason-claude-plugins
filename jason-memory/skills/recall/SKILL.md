@@ -5,8 +5,6 @@ description: Use when the user wants to search or recall memories, check what wa
 
 # Recall — Search Local Memory
 
-> **Auto-recall is active.** Memories are searched automatically when switching topics or starting work on a new area. Use `/recall` when you want to explicitly force a search or the user asks about past decisions.
-
 Search project memories using the memory-researcher agent, which runs in its own context window to protect the parent session.
 
 ## Process
@@ -23,7 +21,7 @@ Search project memories using the memory-researcher agent, which runs in its own
    Task tool → subagent_type: "jason-memory:memory-researcher"
    ```
    In the prompt, tell the agent:
-   - The CLI path (from session context: `Memory CLI: node "..."`)
+   - The CLI path (from session context: look for `Store:` or `Search:` lines)
    - The search query / topic
    - Whether this is a quick lookup, feature context, or planning context (affects response size)
 
@@ -33,6 +31,12 @@ Search project memories using the memory-researcher agent, which runs in its own
    > This is a quick lookup — keep the summary concise (20-50 lines).
 
 4. **Return the agent's summary** to the user. The agent handles all the heavy searching in its own context window — only the concise result enters the parent conversation.
+
+## Notes
+
+- Search defaults to **active memories only**. Use `--all` flag to include superseded/archived.
+- Use `stale --days 30` to find memories that haven't been accessed recently.
+- Use `digest --limit 15` for a quick grouped overview of the most important active memories.
 
 ## Why an Agent?
 

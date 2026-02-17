@@ -16,31 +16,49 @@ Restart Claude Code after installing.
 
 ## How It Works
 
-- **Automatic**: Memories are stored and recalled silently during normal work — no commands needed
 - Memories are stored in `.memory/memories.json` at your project root
 - The file is created automatically on first use — no setup needed
 - Works in any git repo (or any directory)
-- Search uses BM25 ranking — results sorted by relevance, not just keyword match
-- Built-in dedup: before storing, the system checks for similar existing memories and updates instead of duplicating
+- Search uses BM25 ranking with bigram phrase matching and synonym expansion
+- Built-in auto-dedup: `store` checks for similar memories and supersedes or skips automatically
+- Memory versioning: active, superseded, and archived statuses track knowledge evolution
 
 ## What Gets Captured
 
-The plugin automatically stores:
+The plugin provides commands for storing:
 - Architectural or design decisions and their reasoning
 - Patterns, conventions, or rules established during development
 - Non-obvious gotchas, workarounds, or things that broke unexpectedly
 - Error resolutions that took significant debugging
 - User preferences or workflow choices
 
-It does NOT store trivial details, git state, or things already in CLAUDE.md.
+## Commands
 
-## Explicit Commands
+- `/remember` — store a specific memory (auto-dedup handles duplicates)
+- `/recall` — search memories for a topic
+- `/memory-help` — full reference card with all CLI commands
 
-Auto-memory handles most cases, but you can override:
+## Auto-Dedup
 
-- `/remember` — force-store a specific memory
-- `/recall` — force-search memories for a topic
-- `/memory-help` — full reference card
+When you store a memory, the CLI automatically checks for similar existing ones:
+
+| Similarity | Action | Response |
+|-----------|--------|----------|
+| >= 0.9 | Skip (near-duplicate) | `{action: "skipped", existing_id: "..."}` |
+| 0.7 - 0.9 | Supersede old, store new | `{action: "superseded", replaced_id: "..."}` |
+| < 0.7 | Store as new | `{action: "created", stored: {...}}` |
+
+Use `--no-dedup` to bypass this check.
+
+## Memory Statuses
+
+| Status | Meaning |
+|--------|---------|
+| `active` | Current memory, shown in search/list by default |
+| `superseded` | Replaced by a newer memory |
+| `archived` | Soft-deleted via `archive` command |
+
+Use `--all` flag on search/list/recent to include non-active memories.
 
 ## Git Integration
 
@@ -79,11 +97,11 @@ To keep memories private, add to `.gitignore`:
 
 **Search returning no results?**
 - Check that memories exist: run `/memory-help` to see stats
-- Try broader search terms — BM25 works on word overlap
+- Try broader search terms — BM25 works on word overlap with synonym expansion
 
 **`.memory/` directory not created?**
-- It's created on first memory store — work on something and the auto-store will create it
+- It's created on first memory store — use `/remember` to create your first memory
 
-**Too many memories being stored?**
-- The quality guard limits to ~5 high-quality memories per session
-- If the store is noisy, the dedup workflow will consolidate over time
+**Want to clean up old memories?**
+- Use `stale --days 30` to find memories that haven't been accessed
+- Use `archive --id <id>` to soft-delete without losing history

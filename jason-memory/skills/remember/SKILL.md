@@ -5,8 +5,6 @@ description: Use when the user wants to remember something, store a decision, sa
 
 # Remember — Store to Local Memory
 
-> **Auto-memory is active.** Memories are captured automatically during normal work. Use `/remember` when you want to explicitly force a store or override the automatic behavior.
-
 Store whatever the user wants to remember using the local memory CLI.
 
 ## Process
@@ -22,41 +20,41 @@ Store whatever the user wants to remember using the local memory CLI.
 
 3. **Pick 1-3 tags** — lowercase, hyphen-separated, descriptive (e.g., `auth`, `api`, `styling`, `database`).
 
-4. **Dedup check** — before storing, check for similar existing memories:
-   ```
-   node "<cli-path>" find-similar --content "proposed text" --threshold 0.5
-   ```
-   - If a similar memory exists and the new info supersedes it: use `update --id <id> --content "evolved statement"`
-   - If a similar memory exists and says the same thing: tell the user it's already stored
-   - If no match: store as new
-
-5. **Store via Bash:**
+4. **Store via Bash** (auto-dedup is built in — one call does everything):
    ```
    node "<cli-path>" store --content "The concise statement" --type <type> --tags "tag1,tag2"
    ```
-   The CLI path is provided by the session-start hook — look for `Memory CLI: node "..."` in your session context.
+   The CLI path is provided by the session-start hook — look for `Store:` in your session context.
 
-6. **Confirm** what was stored: the statement, type, and tags.
+5. **Check the `action` field** in the response:
+   - `"created"` — new memory stored
+   - `"superseded"` — replaced an older similar memory (shows `replaced_id`)
+   - `"skipped"` — near-duplicate already exists (shows `existing_id`)
+
+6. **Confirm** what happened to the user.
 
 ## Rules
 
 - **One statement per memory** — don't dump paragraphs
 - **Present tense** — "Uses Drizzle ORM" not "Decided to use Drizzle"
 - **Separate memories** for multiple items — if the user says "remember these 3 things", make 3 separate CLI calls
-- **Be concise** — trim filler words, keep the essence
+- **No manual dedup needed** — the store command handles it automatically
+- Use `--no-dedup` only if you explicitly want to bypass similarity checking
 
 ## Examples
 
 **Single decision:**
 > User: "Remember that we're using Tailwind instead of styled-components"
-> → `find-similar --content "Uses Tailwind CSS instead of styled-components for styling"`
-> → (no match) → `store --content "Uses Tailwind CSS instead of styled-components for styling" --type decision --tags "styling,ui"`
+> → `store --content "Uses Tailwind CSS instead of styled-components for styling" --type decision --tags "styling,ui"`
+> → Response: `{action: "created", stored: {...}}`
 
-**Updating a decision:**
+**Superseding a decision:**
 > User: "Actually, we switched back to styled-components"
-> → `find-similar --content "Uses styled-components for styling"`
-> → (match found: "Uses Tailwind CSS...") → `update --id <id> --content "Uses styled-components instead of Tailwind for styling"`
+> → `store --content "Uses styled-components instead of Tailwind for styling" --type decision --tags "styling,ui"`
+> → Response: `{action: "superseded", replaced_id: "m_...", stored: {...}}`
 
-**Multiple items:**
-> User: "Store the key decisions from this session"
-> → Summarize each as a separate memory, dedup-check and store each individually
+**Duplicate detected:**
+> User: "Remember we use Tailwind"
+> → `store --content "Uses Tailwind CSS for styling" --type decision --tags "styling"`
+> → Response: `{action: "skipped", existing_id: "m_..."}`
+> → Tell the user it's already stored

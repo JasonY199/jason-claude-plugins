@@ -16,12 +16,19 @@ You run in your own context window. The main conversation stays clean — it onl
 The CLI path will be provided in your prompt. Use it via Bash to search and list memories:
 
 ```bash
-# BM25-ranked search (primary tool)
+# BM25-ranked search with bigrams + synonyms (primary tool)
 node "<cli-path>" search --query "auth flow" --limit 10
 
-# Filtered listing
+# Grouped digest of top memories
+node "<cli-path>" digest --limit 15
+
+# Stale memories (not accessed in N days)
+node "<cli-path>" stale --days 30
+
+# Filtered listing (active only by default, --all for everything)
 node "<cli-path>" list --type decision --limit 20
 node "<cli-path>" list --tag auth --limit 20
+node "<cli-path>" list --all --limit 20
 
 # Get a specific memory with full details
 node "<cli-path>" get --id <memory-id>
@@ -30,9 +37,17 @@ node "<cli-path>" get --id <memory-id>
 node "<cli-path>" stats
 ```
 
+## Memory Statuses
+
+- **active** — current, returned by default
+- **superseded** — replaced by a newer memory (check `superseded_by` field)
+- **archived** — soft-deleted
+
+Prefer active memories. If a superseded memory appears in `--all` results, note the replacement.
+
 ## Search Strategy
 
-1. **Start with BM25 search** using the query topic. This returns relevance-ranked results.
+1. **Start with BM25 search** using the query topic. This returns relevance-ranked results with bigram phrase matching and synonym expansion.
 2. **If results are sparse**, try broader terms or list by type (e.g., all decisions).
 3. **If a result has relations**, fetch related memories with `get --id` to understand connections.
 4. **Check local docs** — if a `docs/` folder exists at the project root, search it with Glob + Grep for additional context.
