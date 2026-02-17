@@ -1,0 +1,20 @@
+{
+  "name": "jason-memory",
+  "version": "1.0.0",
+  "description": "Self-contained local memory — BM25 search, auto-scoped per project, zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-claude-plugins",
+  "license": "MIT",
+  "keywords": ["memory", "local", "search", "context"],
+  "skills": [
+    "./skills/remember",
+    "./skills/recall",
+    "./skills/memory-help"
+  ],
+  "agents": [
+    "./agents/memory-researcher.md"
+  ]
+}
