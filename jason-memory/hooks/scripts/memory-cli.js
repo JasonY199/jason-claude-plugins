@@ -515,11 +515,16 @@ function cmdStore(args) {
   const now = new Date().toISOString();
 
   // Auto-dedup: check for similar active memories
+  // Scale threshold for short texts — fewer tokens means higher chance of spurious matches
   if (!noDedup) {
     const activeMemories = filterActive(data.memories, false);
     for (const existing of activeMemories) {
       const sim = jaccardSimilarity(content, existing.content);
-      if (sim >= 0.6) {
+      const newTokenCount = new Set(stemTokenize(content)).size;
+      const existingTokenCount = new Set(stemTokenize(existing.content)).size;
+      const minTokens = Math.min(newTokenCount, existingTokenCount);
+      const supersedeThreshold = minTokens < 8 ? 0.8 : 0.6;
+      if (sim >= supersedeThreshold) {
         // High similarity — same content or near-duplicate
         if (sim >= 0.9) {
           return { action: "skipped", reason: "near-duplicate", existing_id: existing.id, similarity: Math.round(sim * 1000) / 1000 };
@@ -622,9 +627,7 @@ function cmdList(args) {
     .sort((a, b) => new Date(b.created) - new Date(a.created))
     .slice(0, limit);
 
-  // Track last_accessed
-  const ids = new Set(memories.map((m) => m.id));
-  touchLastAccessed(data, ids);
+  // No last_accessed update — list is incidental access
 
   return {
     count: memories.length,
@@ -649,9 +652,7 @@ function cmdRecent(args) {
     .sort((a, b) => new Date(b.created) - new Date(a.created))
     .slice(0, limit);
 
-  // Track last_accessed
-  const ids = new Set(memories.map((m) => m.id));
-  touchLastAccessed(data, ids);
+  // No last_accessed update — recent is incidental access
 
   return {
     count: memories.length,
@@ -774,12 +775,61 @@ function cmdRelate(args) {
   };
 }
 
+function cmdUnrelate(args) {
+  const { from, to } = args;
+  if (!from || !to) {
+    return { error: "Missing --from or --to" };
+  }
+
+  const data = loadMemories();
+  const fromMem = data.memories.find((m) => m.id === from);
+
+  if (!fromMem) return { error: `Memory not found: ${from}` };
+
+  const before = (fromMem.relations || []).length;
+  fromMem.relations = (fromMem.relations || []).filter(
+    (r) => r.target !== to,
+  );
+  const after = fromMem.relations.length;
+
+  if (before === after) {
+    return { error: `No relation found from ${from} to ${to}` };
+  }
+
+  fromMem.updated = new Date().toISOString();
+  saveMemories(data);
+  return { unrelated: { from, to, removed: before - after } };
+}
+
+function cmdRestore(args) {
+  if (!args.id) {
+    return { error: "Missing --id" };
+  }
+
+  const data = loadMemories();
+  const memory = data.memories.find((m) => m.id === args.id);
+
+  if (!memory) {
+    return { error: `Memory not found: ${args.id}` };
+  }
+
+  if (memory.status === "active") {
+    return { error: "Memory is already active" };
+  }
+
+  memory.status = "active";
+  memory.updated = new Date().toISOString();
+  saveMemories(data);
+
+  return { restored: { id: memory.id, content: memory.content, previous_status: "archived" } };
+}
+
 function cmdUpdate(args) {
   if (!args.id) {
     return { error: "Missing --id" };
   }
-  if (!args.content) {
-    return { error: "Missing --content" };
+  if (!args.content && !args.tags && !args.type) {
+    return { error: "Provide at least one of --content, --tags, or --type" };
   }
 
   const data = loadMemories();
@@ -794,8 +844,8 @@ function cmdUpdate(args) {
     return { error: `Invalid type "${args.type}". Valid: ${validTypes.join(", ")}` };
   }
 
-  const previous = memory.content;
-  memory.content = args.content;
+  const previous = { content: memory.content, type: memory.type, tags: [...memory.tags] };
+  if (args.content) memory.content = args.content;
   if (args.type) memory.type = args.type;
   if (args.tags) {
     memory.tags = args.tags.split(",").map((t) => t.trim().toLowerCase());
@@ -803,7 +853,7 @@ function cmdUpdate(args) {
   memory.updated = new Date().toISOString();
 
   saveMemories(data);
-  return { updated: { id: memory.id, previous, current: memory.content, type: memory.type } };
+  return { updated: { id: memory.id, previous, current: { content: memory.content, type: memory.type, tags: memory.tags } } };
 }
 
 function cmdFindSimilar(args) {
@@ -870,9 +920,7 @@ function cmdDigest(args) {
     if (grouped[t].length > 0) typeCounts[t] = grouped[t].length;
   }
 
-  // Track last_accessed
-  const ids = new Set(picked.map((m) => m.id));
-  touchLastAccessed(data, ids);
+  // No last_accessed update — digest is incidental access
 
   return {
     project: getProjectName(),
@@ -981,7 +1029,9 @@ function main() {
     get: cmdGet,
     delete: cmdDelete,
     archive: cmdArchive,
+    restore: cmdRestore,
     relate: cmdRelate,
+    unrelate: cmdUnrelate,
     update: cmdUpdate,
     "find-similar": cmdFindSimilar,
     digest: cmdDigest,

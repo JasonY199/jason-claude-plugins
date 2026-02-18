@@ -73,12 +73,14 @@ node "<cli-path>" digest --limit 15
 node "<cli-path>" stale --days 30
 node "<cli-path>" archive --id <memory-id>
 node "<cli-path>" find-similar --content "proposed text" --threshold 0.5 --limit 3
-node "<cli-path>" update --id <memory-id> --content "updated text" [--type type] [--tags "t1,t2"]
+node "<cli-path>" update --id <memory-id> [--content "updated text"] [--type type] [--tags "t1,t2"]
 node "<cli-path>" list --type decision --tag auth --limit 20 [--all]
 node "<cli-path>" recent --limit 5 [--all]
 node "<cli-path>" get --id <memory-id>
 node "<cli-path>" delete --id <memory-id>
 node "<cli-path>" relate --from <id> --to <id> --type supports
+node "<cli-path>" unrelate --from <id> --to <id>
+node "<cli-path>" restore --id <memory-id>
 node "<cli-path>" stats
 ```
 
@@ -93,7 +95,10 @@ node "<cli-path>" stats
 ### Coexistence with Other Plugins
 
 - **jason-handoff**: Handles session continuity (git state, branch, context). Memory handles long-term knowledge.
-- **jason-dev-workflow**: Uses mem0 (cloud) for memory. jason-memory is local-only, zero dependencies. Both can coexist — use whichever fits the project.
+
+### Access Tracking
+
+Only meaningful access (search, get, find-similar) updates `last_accessed`. Incidental access (list, recent, digest) does not — so `stale` reflects genuine disuse.
 
 ### Current Stats
 

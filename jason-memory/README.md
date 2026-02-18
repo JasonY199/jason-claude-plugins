@@ -45,8 +45,10 @@ When you store a memory, the CLI automatically checks for similar existing ones:
 | Similarity | Action | Response |
 |-----------|--------|----------|
 | >= 0.9 | Skip (near-duplicate) | `{action: "skipped", existing_id: "..."}` |
-| 0.7 - 0.9 | Supersede old, store new | `{action: "superseded", replaced_id: "..."}` |
-| < 0.7 | Store as new | `{action: "created", stored: {...}}` |
+| threshold - 0.9 | Supersede old, store new | `{action: "superseded", replaced_id: "..."}` |
+| < threshold | Store as new | `{action: "created", stored: {...}}` |
+
+The supersede threshold adapts to memory length: 0.8 for short memories (< 8 unique tokens) and 0.6 for longer ones, preventing spurious matches on short text.
 
 Use `--no-dedup` to bypass this check.
 
@@ -84,10 +86,18 @@ To keep memories private, add to `.gitignore`:
 | `pattern` | Conventions and patterns to follow |
 | `observation` | General notes and preferences |
 
+## New in v4.0.0
+
+- `restore` command — undo archive, set memory back to active
+- `unrelate` command — remove relations between memories
+- `update` no longer requires `--content` — can update just `--tags` or `--type`
+- `update` response now shows both previous and current values (content, type, tags)
+- Adaptive dedup threshold — 0.8 for short memories (< 8 tokens), 0.6 for longer ones
+- Smarter `last_accessed` — only meaningful access (search, get, find-similar) updates it, not incidental (list, recent, digest)
+
 ## Coexistence with Other Plugins
 
 - **jason-handoff**: Handles session continuity. Memory handles long-term knowledge. Complementary.
-- **jason-dev-workflow**: Uses mem0 (cloud) for memory. jason-memory is local-only. Both can coexist.
 
 ## Troubleshooting
 

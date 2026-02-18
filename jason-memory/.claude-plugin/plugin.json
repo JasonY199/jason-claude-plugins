@@ -1,6 +1,6 @@
 {
   "name": "jason-memory",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Local project memory with auto-dedup, versioning, and BM25 search. Zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
   "author": {
     "name": "Jason Y",
