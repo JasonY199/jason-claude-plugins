@@ -1,0 +1,18 @@
+{
+  "name": "jason-context-researcher",
+  "version": "1.0.0",
+  "description": "Context researcher agent — searches project docs in its own context window, returns focused summaries. Protects the main conversation from doc-reading bloat.",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-claude-plugins",
+  "license": "MIT",
+  "keywords": ["docs", "research", "context", "agent"],
+  "skills": [
+    "./skills/research"
+  ],
+  "agents": [
+    "./agents/context-researcher.md"
+  ]
+}
