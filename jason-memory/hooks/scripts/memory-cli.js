@@ -935,7 +935,7 @@ function cmdDigest(args) {
 }
 
 function cmdStale(args) {
-  const days = parseInt(args.days) || 30;
+  const days = parseInt(args.days) || 120;
 
   const data = loadMemories();
   const active = filterActive(data.memories, false);

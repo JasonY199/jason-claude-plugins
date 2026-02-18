@@ -25,7 +25,7 @@ node "<cli-path>" search --query "auth flow" --limit 25
 node "<cli-path>" digest --limit 15
 
 # Stale memories (not accessed in N days)
-node "<cli-path>" stale --days 30
+node "<cli-path>" stale --days 120
 
 # Filtered listing (active only by default, --all for everything)
 node "<cli-path>" list --type decision --limit 20

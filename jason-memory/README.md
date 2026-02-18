@@ -113,5 +113,5 @@ To keep memories private, add to `.gitignore`:
 - It's created on first memory store — use `/remember` to create your first memory
 
 **Want to clean up old memories?**
-- Use `stale --days 30` to find memories that haven't been accessed
+- Use `stale --days 120` to find memories that haven't been accessed
 - Use `archive --id <id>` to soft-delete without losing history

@@ -70,7 +70,7 @@ Tags are lowercase, hyphen-separated, 1-3 per memory. Examples: `auth`, `api`, `
 node "<cli-path>" store --content "..." --type decision --tags "t1,t2" [--no-dedup]
 node "<cli-path>" search --query "auth flow" --limit 10 [--all]
 node "<cli-path>" digest --limit 15
-node "<cli-path>" stale --days 30
+node "<cli-path>" stale --days 120
 node "<cli-path>" archive --id <memory-id>
 node "<cli-path>" find-similar --content "proposed text" --threshold 0.5 --limit 3
 node "<cli-path>" update --id <memory-id> [--content "updated text"] [--type type] [--tags "t1,t2"]
