@@ -24,15 +24,6 @@
       }
     },
     {
-      "name": "jason-memory",
-      "description": "Local project memory with auto-dedup, versioning, and BM25 search. Zero dependencies. Stores decisions, patterns, and learnings in .memory/ committed to git.",
-      "version": "4.1.0",
-      "source": "./jason-memory",
-      "author": {
-        "name": "Jason Y"
-      }
-    },
-    {
       "name": "jason-context-researcher",
       "description": "Context researcher agent — searches project docs in its own context window, returns focused summaries. Protects the main conversation from doc-reading bloat.",
       "version": "1.0.0",
