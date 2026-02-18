@@ -4,11 +4,11 @@ Personal Claude Code plugin marketplace.
 
 ## Plugins
 
-| Plugin              | Description                                                    |
-| ------------------- | -------------------------------------------------------------- |
-| jason-handoff       | Session handoff skills and hooks for seamless context transfer |
-| jason-design-system | Design-system-first skill for UI development                   |
-| jason-memory        | Self-contained local memory with BM25 search, zero dependencies |
+| Plugin                   | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| jason-handoff            | Session handoff skills and hooks for seamless context transfer |
+| jason-design-system      | Design-system-first skill for UI development                   |
+| jason-context-researcher | Standalone doc research agent for project architecture lookup  |
 
 ## Install
 
