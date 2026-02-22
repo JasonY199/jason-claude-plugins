@@ -33,10 +33,10 @@
       }
     },
     {
-      "name": "openspec",
+      "name": "jason-openspec",
       "description": "OpenSpec skills for spec-driven development — explore, plan, implement, and archive changes with structured artifacts. Requires openspec CLI.",
       "version": "1.1.1",
-      "source": "./openspec",
+      "source": "./jason-openspec",
       "author": {
         "name": "Jason Y"
       }

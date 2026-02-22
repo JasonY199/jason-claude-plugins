@@ -1,0 +1,25 @@
+{
+  "name": "jason-openspec",
+  "version": "1.1.1",
+  "description": "OpenSpec skills for spec-driven development — explore, plan, implement, and archive changes with structured artifacts",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-claude-plugins",
+  "license": "MIT",
+  "keywords": ["openspec", "spec-driven", "sdd", "planning", "workflow"],
+  "skills": [
+    "./skills/openspec-apply",
+    "./skills/openspec-archive",
+    "./skills/openspec-bulk-archive",
+    "./skills/openspec-continue",
+    "./skills/openspec-explore",
+    "./skills/openspec-ff",
+    "./skills/openspec-new",
+    "./skills/openspec-onboard",
+    "./skills/openspec-setup",
+    "./skills/openspec-sync",
+    "./skills/openspec-verify"
+  ]
+}
