@@ -31,6 +31,15 @@
       "author": {
         "name": "Jason Y"
       }
+    },
+    {
+      "name": "opsx",
+      "description": "OpenSpec skills for spec-driven development — explore, plan, implement, and archive changes with structured artifacts. Requires openspec CLI.",
+      "version": "1.0.0",
+      "source": "./opsx",
+      "author": {
+        "name": "Jason Y"
+      }
     }
   ]
 }

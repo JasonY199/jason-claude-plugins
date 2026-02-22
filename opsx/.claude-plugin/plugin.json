@@ -1,0 +1,24 @@
+{
+  "name": "opsx",
+  "version": "1.0.0",
+  "description": "OpenSpec skills for spec-driven development — explore, plan, implement, and archive changes with structured artifacts",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-claude-plugins",
+  "license": "MIT",
+  "keywords": ["openspec", "spec-driven", "sdd", "planning", "workflow"],
+  "skills": [
+    "./skills/apply",
+    "./skills/archive",
+    "./skills/bulk-archive",
+    "./skills/continue",
+    "./skills/explore",
+    "./skills/ff",
+    "./skills/new",
+    "./skills/onboard",
+    "./skills/sync",
+    "./skills/verify"
+  ]
+}
