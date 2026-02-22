@@ -20,12 +20,12 @@ openspec --version
 
 Should show `1.1.1` or later.
 
-### 2. Install the opsx Claude Code plugin
+### 2. Install the jason-openspec Claude Code plugin
 
 In Claude Code:
 ```
 /plugin marketplace add JasonY199/jason-claude-plugins
-/plugin install opsx@jason-claude-plugins
+/plugin install jason-openspec@jason-claude-plugins
 ```
 
 ### 3. Initialize OpenSpec in your project
@@ -39,7 +39,7 @@ This creates the `openspec/` directory structure in your project.
 
 ### 4. Verify
 
-Run `/opsx:onboard` for a guided walkthrough, or `/opsx:new` to start your first change.
+Run `/jason-openspec:openspec-onboard` for a guided walkthrough, or `/jason-openspec:openspec-new` to start your first change.
 
 ---
 
@@ -58,25 +58,25 @@ If the OpenSpec CLI ships updated skill content:
 
 1. Create a temp directory and init:
    ```bash
-   mkdir /tmp/opsx-check && cd /tmp/opsx-check
+   mkdir /tmp/openspec-check && cd /tmp/openspec-check
    openspec init
    ```
 
 2. Compare the generated skills against the plugin:
    ```bash
-   diff -r /tmp/opsx-check/.claude/skills/ ~/github/jason-claude-plugins/opsx/skills/
+   diff -r /tmp/openspec-check/.claude/skills/ ~/github/jason-claude-plugins/jason-openspec/skills/
    ```
 
-3. If differences exist, update the plugin skills in `~/github/jason-claude-plugins/opsx/skills/`
+3. If differences exist, update the plugin skills in `~/github/jason-claude-plugins/jason-openspec/skills/`
 
 4. Bump version in both files:
-   - `opsx/.claude-plugin/plugin.json` — `"version": "X.Y.Z"`
-   - `.claude-plugin/marketplace.json` — matching version for the opsx entry
+   - `jason-openspec/.claude-plugin/plugin.json` — `"version": "X.Y.Z"`
+   - `.claude-plugin/marketplace.json` — matching version for the jason-openspec entry
 
 5. Commit, push, and update the cache:
    ```bash
    cd ~/github/jason-claude-plugins
-   git add -A && git commit -m "feat: update opsx skills to vX.Y.Z" && git push
+   git add -A && git commit -m "feat: update jason-openspec skills to vX.Y.Z" && git push
    ```
 
 6. In Claude Code:
@@ -86,7 +86,7 @@ If the OpenSpec CLI ships updated skill content:
 
 7. Clean up:
    ```bash
-   rm -rf /tmp/opsx-check
+   rm -rf /tmp/openspec-check
    ```
 
 ---
@@ -95,34 +95,34 @@ If the OpenSpec CLI ships updated skill content:
 
 | Command | What it does |
 |---------|--------------|
-| `/opsx:explore` | Think through problems before/during work (no code changes) |
-| `/opsx:new <name>` | Start a new change, step through artifacts one at a time |
-| `/opsx:ff <name>` | Fast-forward: create all artifacts at once |
-| `/opsx:continue <name>` | Continue an existing change (next artifact) |
-| `/opsx:apply <name>` | Implement tasks from a change |
-| `/opsx:verify <name>` | Verify implementation matches artifacts |
-| `/opsx:sync <name>` | Sync delta specs to main specs |
-| `/opsx:archive <name>` | Archive a completed change |
-| `/opsx:bulk-archive` | Archive multiple changes at once |
-| `/opsx:onboard` | Guided tutorial through the full workflow |
-| `/opsx:setup` | This help page |
+| `/jason-openspec:openspec-explore` | Think through problems before/during work (no code changes) |
+| `/jason-openspec:openspec-new <name>` | Start a new change, step through artifacts one at a time |
+| `/jason-openspec:openspec-ff <name>` | Fast-forward: create all artifacts at once |
+| `/jason-openspec:openspec-continue <name>` | Continue an existing change (next artifact) |
+| `/jason-openspec:openspec-apply <name>` | Implement tasks from a change |
+| `/jason-openspec:openspec-verify <name>` | Verify implementation matches artifacts |
+| `/jason-openspec:openspec-sync <name>` | Sync delta specs to main specs |
+| `/jason-openspec:openspec-archive <name>` | Archive a completed change |
+| `/jason-openspec:openspec-bulk-archive` | Archive multiple changes at once |
+| `/jason-openspec:openspec-onboard` | Guided tutorial through the full workflow |
+| `/jason-openspec:openspec-setup` | This help page |
 
 ## Typical Workflow
 
 ```
-/opsx:explore          → Think through the problem
-/opsx:ff my-feature    → Create all artifacts (proposal → specs → design → tasks)
-/opsx:apply            → Implement the tasks
-/opsx:verify           → Check implementation matches specs
-/opsx:archive          → Archive when done
+/jason-openspec:openspec-explore          → Think through the problem
+/jason-openspec:openspec-ff my-feature    → Create all artifacts (proposal → specs → design → tasks)
+/jason-openspec:openspec-apply            → Implement the tasks
+/jason-openspec:openspec-verify           → Check implementation matches specs
+/jason-openspec:openspec-archive          → Archive when done
 ```
 
 Or step-by-step:
 ```
-/opsx:new my-feature   → Create change, see first artifact template
-/opsx:continue         → Create next artifact (repeat until all done)
-/opsx:apply            → Implement
-/opsx:archive          → Done
+/jason-openspec:openspec-new my-feature   → Create change, see first artifact template
+/jason-openspec:openspec-continue         → Create next artifact (repeat until all done)
+/jason-openspec:openspec-apply            → Implement
+/jason-openspec:openspec-archive          → Done
 ```
 
 ---

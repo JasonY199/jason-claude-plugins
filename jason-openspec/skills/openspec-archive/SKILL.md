@@ -57,7 +57,7 @@ Archive a completed change in the experimental workflow.
    - If changes needed: "Sync now (recommended)", "Archive without syncing"
    - If already synced: "Archive now", "Sync anyway", "Cancel"
 
-   If user chooses sync, execute /opsx:sync logic (use the sync skill). Proceed to archive regardless of choice.
+   If user chooses sync, execute /jason-openspec:openspec-sync logic (use the sync skill). Proceed to archive regardless of choice.
 
 5. **Perform the archive**
 
