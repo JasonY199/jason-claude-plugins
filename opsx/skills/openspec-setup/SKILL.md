@@ -1,5 +1,5 @@
 ---
-name: setup
+name: openspec-setup
 description: Install, update, or troubleshoot OpenSpec. Use when the user says "install openspec", "set up openspec", "update openspec", "openspec help", "how do I use openspec", or encounters "openspec command not found".
 ---
 

@@ -20,16 +20,16 @@ openspec init
 
 | Command | Description |
 |---------|-------------|
-| `/opsx:explore` | Think through problems before/during work |
-| `/opsx:new` | Start a new change, step through artifacts |
-| `/opsx:ff` | Fast-forward: create all artifacts at once |
-| `/opsx:continue` | Continue working on an existing change |
-| `/opsx:apply` | Implement tasks from a change |
-| `/opsx:verify` | Verify implementation matches artifacts |
-| `/opsx:sync` | Sync delta specs to main specs |
-| `/opsx:archive` | Archive a completed change |
-| `/opsx:bulk-archive` | Archive multiple changes at once |
-| `/opsx:onboard` | Guided tutorial through the full workflow |
+| `/openspec-explore` | Think through problems before/during work |
+| `/openspec-new` | Start a new change, step through artifacts |
+| `/openspec-ff` | Fast-forward: create all artifacts at once |
+| `/openspec-continue` | Continue working on an existing change |
+| `/openspec-apply` | Implement tasks from a change |
+| `/openspec-verify` | Verify implementation matches artifacts |
+| `/openspec-sync` | Sync delta specs to main specs |
+| `/openspec-archive` | Archive a completed change |
+| `/openspec-bulk-archive` | Archive multiple changes at once |
+| `/openspec-onboard` | Guided tutorial through the full workflow |
 
 ## Updating
 

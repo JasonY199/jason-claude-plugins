@@ -1,5 +1,5 @@
 ---
-name: sync
+name: openspec-sync
 description: Sync delta specs from a change to main specs. Use when the user wants to update main specs with changes from a delta spec, without archiving the change.
 ---
 

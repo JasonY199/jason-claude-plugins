@@ -1,5 +1,5 @@
 ---
-name: bulk-archive
+name: openspec-bulk-archive
 description: Archive multiple completed changes at once. Use when archiving several parallel changes.
 ---
 

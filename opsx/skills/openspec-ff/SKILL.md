@@ -1,5 +1,5 @@
 ---
-name: ff
+name: openspec-ff
 description: Fast-forward through OpenSpec artifact creation. Use when the user wants to quickly create all artifacts needed for implementation without stepping through each one individually.
 ---
 

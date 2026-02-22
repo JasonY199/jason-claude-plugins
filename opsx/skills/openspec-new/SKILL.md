@@ -1,5 +1,5 @@
 ---
-name: new
+name: openspec-new
 description: Start a new OpenSpec change using the experimental artifact workflow. Use when the user wants to create a new feature, fix, or modification with a structured step-by-step approach.
 ---
 
