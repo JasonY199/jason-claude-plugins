@@ -1,4 +1,4 @@
-# opsx — OpenSpec Skills Plugin
+# openspec — OpenSpec Skills Plugin
 
 Claude Code skills for [OpenSpec](https://github.com/Fission-AI/OpenSpec) spec-driven development.
 
