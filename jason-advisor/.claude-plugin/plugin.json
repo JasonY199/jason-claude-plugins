@@ -1,0 +1,21 @@
+{
+  "name": "jason-advisor",
+  "version": "1.0.0",
+  "description": "Project advisor plugin — researches docs/code, queries GitHub, analyzes project state, and recommends what to work on next. Three specialized agents, two skills.",
+  "author": {
+    "name": "Jason Y",
+    "url": "https://github.com/JasonY199"
+  },
+  "repository": "https://github.com/JasonY199/jason-claude-plugins",
+  "license": "MIT",
+  "keywords": ["advisor", "research", "docs", "github", "planning", "agent"],
+  "skills": [
+    "./skills/research",
+    "./skills/whatsnext"
+  ],
+  "agents": [
+    "./agents/docs-researcher.md",
+    "./agents/github-researcher.md",
+    "./agents/project-state.md"
+  ]
+}
